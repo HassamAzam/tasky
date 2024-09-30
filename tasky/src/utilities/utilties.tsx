@@ -23,3 +23,11 @@ export const formatTimestamp = (timestamp: string) => {
 
   return date.toLocaleDateString("en-US", options);
 };
+
+export const sessionClear = () => {
+  sessionStorage.clear();
+};
+
+export const sessionSetter = (user: string) => {
+  sessionStorage.setItem("loggedInUserIn", user);
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { redirect } from "next/navigation";
 import { v4 } from "uuid";
 import { createPortal } from "react-dom";
@@ -27,12 +27,11 @@ import {
   updateColumnNameFromDb,
 } from "@/middleware/middleware";
 
-import { getFormattedDate } from "@/utilities/utilties";
+import { getFormattedDate, sessionClear } from "@/utilities/utilties";
 import PlusIcon from "@/Icons/PlusIcon";
 import { ColumnType, TaskType } from "@/types";
 import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./Card";
-import React from "react";
 import Navbar from "./Navbar";
 import useDocumentTitle from "../titleHook";
 
@@ -101,7 +100,7 @@ const KanbanBoard = () => {
   }, [loggedInUser]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("email");
+    sessionClear();
   };
 
   const createNewColumn = async () => {

@@ -7,6 +7,7 @@ import { authenticateUser } from "@/middleware/middleware";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+import { sessionSetter } from "@/utilities/utilties";
 import useDocumentTitle from "../titleHook";
 
 interface IFormInput {
@@ -21,7 +22,7 @@ const LoginPage = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<IFormInput>({ email: "", password: "" });
 
-  useDocumentTitle('Login')
+  useDocumentTitle("Login");
 
   const validateForm = () => {
     let valid = true;
@@ -60,7 +61,7 @@ const LoginPage = () => {
       const user = await authenticateUser({ email, password });
       if (user == undefined || user == null) {
       } else {
-        sessionStorage.setItem("email", user);
+        sessionSetter(user);
         router.push("/board");
       }
     }
