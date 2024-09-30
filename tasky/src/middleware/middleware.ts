@@ -44,7 +44,7 @@ export async function insertUser(userObj: {
     return;
   }
 
-  redirect("/Login");
+  redirect("/login");
 }
 
 export async function authenticateUser(userObj: {
