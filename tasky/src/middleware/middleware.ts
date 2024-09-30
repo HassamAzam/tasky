@@ -16,7 +16,7 @@ if (!supabaseUrl || !supabaseKey) {
 }
 const supabase = createClient(supabaseUrl, supabaseKey);
 export async function fetchUsers() {
-  const { data: users, error } = await supabase.from("users").select("*");
+  const { data: error } = await supabase.from("users").select("*");
 
   if (error) {
     return;
@@ -28,7 +28,7 @@ export async function insertUser(userObj: {
   email: string | undefined;
   password: string | undefined;
 }) {
-  const { data, error } = await supabase
+  const { data: error } = await supabase
     .from("users")
     .insert([
       {
@@ -39,6 +39,10 @@ export async function insertUser(userObj: {
       },
     ])
     .select();
+  if (error)
+  {
+    return;
+  }
 
   redirect("/Login");
 }
@@ -47,7 +51,7 @@ export async function authenticateUser(userObj: {
   email: string | undefined;
   password: string | undefined;
 }) {
-  let { data: users } = await supabase
+  const { data: users } = await supabase
     .from("users")
     .select("*")
 
@@ -63,7 +67,7 @@ export async function authenticateUser(userObj: {
 }
 
 export async function getColumns(email: string) {
-  let { data: columns } = await supabase
+  const { data: columns } = await supabase
     .from("columns")
     .select("*")
     .eq("userEmail", email);
@@ -74,13 +78,17 @@ export async function getColumns(email: string) {
   }
 }
 export async function getCards(email: string) {
-  let { data: cards, error } = await supabase
+  const { data: cards, error } = await supabase
     .from("cards")
     .select("*")
     .eq("email", email);
   if (cards) {
     const taskStruturizedData = transformDbDataTask(cards);
     return taskStruturizedData;
+  }
+  if (error)
+  {
+    throw error
   }
 }
 
@@ -89,10 +97,13 @@ export async function sendColumn(
   email: string,
   columnTitle: string
 ) {
-  const { data: columns, error } = await supabase
+  const { error } = await supabase
     .from("columns")
     .insert([{ id: columnId, userEmail: email, title: columnTitle }])
     .select();
+  if (error) {
+    throw error;
+  }
 }
 
 export async function addCard(
@@ -101,7 +112,7 @@ export async function addCard(
   cardDescription: string,
   email: string
 ) {
-  const { data: cards, error } = await supabase
+  const { data: error } = await supabase
     .from("cards")
     .insert([
       {
@@ -112,6 +123,9 @@ export async function addCard(
       },
     ])
     .select();
+  if (error) {
+    return
+  }
 }
 
 export const updateCardFromDb = async (
@@ -121,7 +135,7 @@ export const updateCardFromDb = async (
   columndId: string,
   date: string
 ) => {
-  const { data: cards, error } = await supabase
+  const { data: error } = await supabase
     .from("cards")
     .update({
       description: cardDescription,
@@ -131,23 +145,38 @@ export const updateCardFromDb = async (
     })
     .eq("id", cardId)
     .select();
+  if (error) {
+  return
+  }
 };
 export const updateColumnNameFromDb = async (
   columnId: string,
   columnTitle: string
 ) => {
-  const { data, error } = await supabase
+  const { data: error } = await supabase
     .from("columns")
     .update({ title: columnTitle })
     .eq("id", columnId)
     .select();
-};
-export const deleteColumnFromDb = async (columnId: string) => {
-  const { error } = await supabase.from("columns").delete().eq("id", columnId);
   if (error) {
-  } else {
+    return;
   }
 };
+export const deleteColumnFromDb = async (columnId: string) => {
+  const { data: error } = await supabase
+    .from("columns")
+    .delete()
+    .eq("id", columnId);
+  if (error) {
+    return;
+  } 
+};
 export const deleteTask = async (taskId: string) => {
-  const { error } = await supabase.from("cards").delete().eq("id", taskId);
+  const { data: error } = await supabase
+    .from("cards")
+    .delete()
+    .eq("id", taskId);
+  if (error) {
+    return;
+  }
 };

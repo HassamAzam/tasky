@@ -7,13 +7,6 @@ import Link from "next/link";
 import { insertUser } from "@/middleware/middleware";
 import useDocumentTitle from "../titleHook";
 
-interface SignUpForm {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
 const SignupPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);

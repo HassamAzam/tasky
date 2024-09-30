@@ -168,7 +168,7 @@ const LoginPage = () => {
           align="center"
           sx={{ marginTop: 3, color: "#888" }}
         >
-          Don't have an account?{" "}
+          No account?
           <Button
             sx={{
               color: "#2575fc",
