@@ -12,21 +12,19 @@ export type TaskType = {
   time: string;
 };
 
-
 export type ColumnTypeInDb = {
-  id: string,
-  title: string,
-  created_at: string,
-  userEmail:string
-}
+  id: string;
+  title: string;
+  created_at: string;
+  userEmail: string;
+};
 export type TaskTypeInDb = {
-  id: string,
-  title: string,
-  description: string,
-  created_at: string,
-  email: string,
-  updatedBy: string,
-  order: number
-  column_id:string
-  
-}
+  id: string;
+  title: string;
+  description: string;
+  created_at: string;
+  email: string;
+  updatedBy: string;
+  order: number;
+  column_id: string;
+};

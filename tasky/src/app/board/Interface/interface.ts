@@ -15,4 +15,5 @@ export  interface CardProps {
     task: TaskType;
     deleteTask: (id: string) => void;
     updateTask: (id: string, content: string, columnId: string) => void;
-  }
+}
+  

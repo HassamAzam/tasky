@@ -6,6 +6,7 @@ import { TextField, Button, Paper, Typography, Box, Grid } from "@mui/material";
 import { authenticateUser } from "@/middleware/middleware";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 import useDocumentTitle from "../titleHook";
 
 interface IFormInput {

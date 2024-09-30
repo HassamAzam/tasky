@@ -1,4 +1,4 @@
-export default function DeleteIcon() {
+const DeleteIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -15,4 +15,5 @@ export default function DeleteIcon() {
       />
     </svg>
   );
-}
+};
+export default DeleteIcon;

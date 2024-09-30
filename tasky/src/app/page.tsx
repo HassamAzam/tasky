@@ -1,11 +1,13 @@
-'use client'
+"use client";
 
 import SignupPage from "./signup/Signup";
 
-export default function Home() {
+const Home = () => {
   return (
     <div>
-   <SignupPage/>
-   </div>
+      <SignupPage />
+    </div>
   );
-}
+};
+
+export default Home;

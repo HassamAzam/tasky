@@ -38,8 +38,14 @@ import useDocumentTitle from "../titleHook";
 
 const KanbanBoard = () => {
   useDocumentTitle("Board");
+
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [tasks, setTasks] = useState<TaskType[]>([]);
+  const [columns, setColumns] = useState<ColumnType[]>([]);
+  const [activeColumn, setActiveColumn] = useState<ColumnType | null>(null);
+  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
+
+  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   useEffect(() => {
     const email = sessionStorage.getItem("email");
@@ -70,10 +76,6 @@ const KanbanBoard = () => {
     }
   };
 
-  const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [activeColumn, setActiveColumn] = useState<ColumnType | null>(null);
-  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -98,7 +100,6 @@ const KanbanBoard = () => {
     }
   }, [loggedInUser]);
 
-  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
   const handleLogout = () => {
     sessionStorage.removeItem("email");
   };
@@ -158,6 +159,7 @@ const KanbanBoard = () => {
     setTasks(newTask);
     await deleteTaskFromDb(deletedTask[0].id);
   };
+
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Column") {
       setActiveColumn(event.active.data.current.column);
@@ -168,9 +170,6 @@ const KanbanBoard = () => {
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
-    const newTask = active.data.current?.task;
-    updateTask(newTask.id, newTask.content, newTask.columnId);
 
     setActiveTask(null);
     setActiveColumn(null);
@@ -196,6 +195,8 @@ const KanbanBoard = () => {
       });
     }
     if (active.data.current?.type === "Task") {
+      const newTask: TaskType = active.data.current?.task;
+      updateTask(newTask.id, newTask.content, newTask.columnId);
       const activeTaskId = active.id;
       const overTaskId = over.id;
       if (activeTaskId === overTaskId) {

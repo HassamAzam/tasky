@@ -1,5 +1,8 @@
-import { ColumnType,ColumnTypeInDb,TaskType, TaskTypeInDb } from "@/types";
-export const transformDbDataColumn= (dbData: ColumnTypeInDb[]): ColumnType[] => {
+import { ColumnType, ColumnTypeInDb, TaskType, TaskTypeInDb } from "@/types";
+
+export const transformDbDataColumn = (
+  dbData: ColumnTypeInDb[]
+): ColumnType[] => {
   return dbData.map((item) => ({
     id: item.id,
     title: item.title,
@@ -13,7 +16,6 @@ export const transformDbDataTask = (dbData: TaskTypeInDb[]): TaskType[] => {
     columnId: item.column_id,
     content: item.description,
     email: item.email,
-    time: item.created_at
+    time: item.created_at,
   }));
 };
-

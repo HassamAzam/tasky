@@ -8,10 +8,12 @@ import { insertUser } from "@/middleware/middleware";
 import useDocumentTitle from "../titleHook";
 
 const SignupPage = () => {
+
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  
   const [errors, setErrors] = React.useState<{ [key: string]: string }>({
     name: "",
     email: "",
@@ -19,7 +21,7 @@ const SignupPage = () => {
     confirmPassword: "",
   });
 
-  useDocumentTitle("SignUp")
+  useDocumentTitle("SignUp");
   const validateForm = () => {
     let valid = true;
     const newErrors = {

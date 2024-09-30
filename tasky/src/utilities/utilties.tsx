@@ -1,4 +1,4 @@
-export function getFormattedDate() {
+export const getFormattedDate = () => {
   const date = new Date();
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -8,9 +8,9 @@ export function getFormattedDate() {
   const seconds = String(date.getSeconds()).padStart(2, "0");
   const milliseconds = String(date.getMilliseconds()).padStart(6, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
-}
+};
 
-export function formatTimestamp(timestamp: string): string {
+export const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -22,4 +22,4 @@ export function formatTimestamp(timestamp: string): string {
   };
 
   return date.toLocaleDateString("en-US", options);
-}
+};
