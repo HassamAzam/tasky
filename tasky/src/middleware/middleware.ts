@@ -54,11 +54,11 @@ export async function authenticateUser(userObj: {
   const { data: users } = await supabase
     .from("users")
     .select("*")
-
-    .eq("email", userObj.email);
+    .eq("email", userObj.email)
+    .eq("password",userObj.password);
   if (users) {
-    const pass = users[0].password;
-    if (pass === userObj.password) {
+  
+    if (users) {
       return userObj.email;
     } else {
       return "";
