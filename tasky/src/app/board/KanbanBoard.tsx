@@ -19,6 +19,7 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import {
   addCard,
   deleteColumnFromDb,
+  deleteTaskFromDb,
   getCards,
   getColumns,
   sendColumn,
@@ -58,13 +59,14 @@ const KanbanBoard = () => {
         email: loggedInUser,
         time: Date(),
       };
+
+      setTasks((prevTasks) => [...prevTasks, newTask]);
       await addCard(
         newTask.id,
         newTask.columnId,
         newTask.content,
         loggedInUser
       );
-      setTasks((prevTasks) => [...prevTasks, newTask]);
     }
   };
 
@@ -108,19 +110,25 @@ const KanbanBoard = () => {
       title: `Column ${columns.length + 1}`,
       email: loggedInUser,
     };
-    await sendColumn(columnToAdd.id, columnToAdd.email, columnToAdd.title);
+
     setColumns((prevColumns) => [...prevColumns, columnToAdd]);
+    await sendColumn(columnToAdd.id, columnToAdd.email, columnToAdd.title);
   };
 
   const deleteColumn = async (id: string) => {
-    await deleteColumnFromDb(id);
     const filteredColumn = columns.filter((col) => col.id !== id);
     setColumns(filteredColumn);
+    await deleteColumnFromDb(id);
     const newTasks = tasks.filter((t) => t.columnId !== id);
     setTasks(newTasks);
   };
 
   const updateTask = async (id: string, content: string, columnId: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, content, columnId } : task
+      )
+    );
     if (loggedInUser) {
       await updateCardFromDb(
         id,
@@ -130,11 +138,6 @@ const KanbanBoard = () => {
         getFormattedDate()
       );
     }
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, content, columnId } : task
-      )
-    );
   };
 
   const updateColumn = (id: string, title: string) => {
@@ -148,9 +151,12 @@ const KanbanBoard = () => {
     );
   };
 
-  const deleteTask = (id: string) => {
+  const deleteTask = async (id: string) => {
     const newTask = tasks.filter((task) => task.id !== id);
+    const deletedTask = tasks.filter((task) => task.id === id);
+
     setTasks(newTask);
+    await deleteTaskFromDb(deletedTask[0].id);
   };
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Column") {
