@@ -1,5 +1,5 @@
 import React from 'react'
-import KanbanBoard from './KanbanBoard'
+import KanbanBoard from '@/app/board/KanbanBoard'
 
 function Page() {
   return (

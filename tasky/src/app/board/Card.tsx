@@ -7,7 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { Modal, Button, TextareaAutosize } from "@mui/material";
 
-import { CardProps } from "./Interface/interface";
+import { CardProps } from "@/app/board/Interface/interface";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import { formatTimestamp } from "@/utilities/utilties";
 

@@ -5,7 +5,7 @@ import { TextField, Button, Paper, Typography, Box, Grid } from "@mui/material";
 import Link from "next/link";
 
 import { insertUser } from "@/middleware/middleware";
-import useDocumentTitle from "../titleHook";
+import useDocumentTitle from "@/app/titleHook";
 
 const SignupPage = () => {
 

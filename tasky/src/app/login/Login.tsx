@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { sessionSetter } from "@/utilities/utilties";
-import useDocumentTitle from "../titleHook";
+import useDocumentTitle from "@/app/titleHook";
 
 interface IFormInput {
   email: string | undefined;

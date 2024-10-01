@@ -6,9 +6,9 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import DeleteIcon from "@/Icons/DeleteIcon";
-import { ColumnProps } from "./Interface/interface";
+import { ColumnProps } from "@/app/board/Interface/interface";
 import PlusIcon from "@/Icons/PlusIcon";
-import TaskCard from "./Card";
+import TaskCard from "@/app/board/Card";
 
 import { useRef } from "react";
 

@@ -29,5 +29,5 @@ export const sessionClear = () => {
 };
 
 export const sessionSetter = (user: string) => {
-  sessionStorage.setItem("loggedInUserIn", user);
+  sessionStorage.setItem("loggedInUser", user);
 };

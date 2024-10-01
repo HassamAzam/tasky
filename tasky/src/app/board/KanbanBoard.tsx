@@ -30,10 +30,11 @@ import {
 import { getFormattedDate, sessionClear } from "@/utilities/utilties";
 import PlusIcon from "@/Icons/PlusIcon";
 import { ColumnType, TaskType } from "@/types";
-import ColumnContainer from "./ColumnContainer";
-import TaskCard from "./Card";
-import Navbar from "./Navbar";
-import useDocumentTitle from "../titleHook";
+import ColumnContainer from "@/app/board/ColumnContainer";
+import TaskCard from "@/app/board/Card";
+import Navbar from "@/app/board/Navbar";
+import useDocumentTitle from "@/app/titleHook";
+
 
 const KanbanBoard = () => {
   useDocumentTitle("Board");
@@ -47,7 +48,7 @@ const KanbanBoard = () => {
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   useEffect(() => {
-    const email = sessionStorage.getItem("email");
+    const email = sessionStorage.getItem("loggedInUser");
     if (email) {
       setLoggedInUser(email);
     } else {
