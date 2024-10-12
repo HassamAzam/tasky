@@ -6,13 +6,16 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import DeleteIcon from "@/Icons/DeleteIcon";
-import { ColumnProps } from "@/app/board/Interface/interface";
+import { ContainerType } from "@/utilities/Enums";
+import { ColumnProps } from "./interface";
 import PlusIcon from "@/Icons/PlusIcon";
 import TaskCard from "@/app/board/Card";
 
 import { useRef } from "react";
 
 const ColumnContainer = (props: ColumnProps) => {
+  const columnNameRef = useRef<HTMLInputElement>(null);
+
   const {
     column,
     deleteColumn,
@@ -37,7 +40,7 @@ const ColumnContainer = (props: ColumnProps) => {
   } = useSortable({
     id: column.id,
     data: {
-      type: "Column",
+      type: ContainerType.Column,
       column,
     },
   });
@@ -48,8 +51,6 @@ const ColumnContainer = (props: ColumnProps) => {
     backgroundColor: "#161D22",
     borderColor: "#0D1117",
   };
-
-  const columnNameRef = useRef<HTMLInputElement>(null);
 
   const handleCreateTask = () => {
     createTask(column.id);

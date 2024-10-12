@@ -6,14 +6,14 @@ import Link from "next/link";
 
 import { insertUser } from "@/middleware/middleware";
 import useDocumentTitle from "@/app/titleHook";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 const SignupPage = () => {
-
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-  
   const [errors, setErrors] = React.useState<{ [key: string]: string }>({
     name: "",
     email: "",
@@ -22,6 +22,7 @@ const SignupPage = () => {
   });
 
   useDocumentTitle("SignUp");
+
   const validateForm = () => {
     let valid = true;
     const newErrors = {
@@ -72,8 +73,13 @@ const SignupPage = () => {
       const name = nameRef.current?.value;
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value;
-
-      await insertUser({ name, email, password });
+      
+      const res = await insertUser({ name, email, password });
+      if (res) {
+        toast.success("User SignedUp");
+      } else {
+        toast.error("User with the same name exists");
+      }
     }
   };
 
@@ -224,6 +230,7 @@ const SignupPage = () => {
           </Button>
         </Typography>
       </Paper>
+      <ToastContainer />
     </Box>
   );
 };

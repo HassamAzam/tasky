@@ -1,10 +1,11 @@
 import React from "react";
-import LoginPage from "@/app/login/Login";
+import LoginPage from "./Login";
 
-export default function page() {
+const page = () => {
   return (
     <div>
       <LoginPage />
     </div>
   );
-}
+};
+export default page;

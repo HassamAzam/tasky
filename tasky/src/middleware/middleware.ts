@@ -1,4 +1,5 @@
 "use server";
+
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { redirect } from "next/navigation";
@@ -14,13 +15,37 @@ if (!supabaseUrl || !supabaseKey) {
     "Supabase URL or key is not defined in the environment variables."
   );
 }
+
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+const checkExistence = async (userEmail: string | undefined) => {
+  try {
+    const { data: users, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", userEmail);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return users?.length > 0;
+  } catch (e) {
+    throw e;
+  }
+};
 
 export const fetchUsers = async () => {
   try {
-    await supabase.from("users").select("*");
+    const { data: users, error } = await supabase.from("users").select("*");
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return users;
   } catch (e) {
-    return e;
+    throw e;
   }
 };
 
@@ -29,21 +54,32 @@ export const insertUser = async (userObj: {
   email: string | undefined;
   password: string | undefined;
 }) => {
-  try {
-    await supabase
-      .from("users")
-      .insert([
-        {
-          id: uuidv4(),
-          email: userObj.email,
-          username: userObj.name,
-          password: userObj.password,
-        },
-      ])
-      .select();
-    redirect("/login");
-  } catch (e) {
-    return e;
+  const ifExists = await checkExistence(userObj.email);
+  if (ifExists) {
+    return false;
+  } else {
+    try {
+      const { error } = await supabase
+        .from("users")
+        .insert([
+          {
+            id: uuidv4(),
+            email: userObj.email,
+            username: userObj.name,
+            password: userObj.password,
+          },
+        ])
+        .select();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      redirect("/Login");
+      return true;
+    } catch (e) {
+      throw e;
+    }
   }
 };
 
@@ -52,15 +88,20 @@ export const authenticateUser = async (userObj: {
   password: string | undefined;
 }) => {
   try {
-    const { data: users } = await supabase
+    const { data: users, error } = await supabase
       .from("users")
       .select("*")
-      .eq("email", userObj.email)
-      .eq("password", userObj.password);
-    if (users) {
-      if (users) {
-        return userObj.email;
-      }
+      .eq("email", userObj.email);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (users?.length) {
+      const { password } = users[0];
+      return password === userObj.password ? userObj.email : "";
+    } else {
+      return "";
     }
   } catch (e) {
     throw e;
@@ -69,15 +110,16 @@ export const authenticateUser = async (userObj: {
 
 export const getColumns = async (email: string) => {
   try {
-    const { data: columns } = await supabase
+    const { data: columns, error } = await supabase
       .from("columns")
       .select("*")
       .eq("userEmail", email);
 
-    if (columns) {
-      const columnStruturizedData = transformDbDataColumn(columns);
-      return columnStruturizedData;
+    if (error) {
+      throw new Error(error.message);
     }
+
+    return transformDbDataColumn(columns);
   } catch (e) {
     throw e;
   }
@@ -90,14 +132,11 @@ export const getCards = async (email: string) => {
       .select("*")
       .eq("email", email);
 
-    if (cards) {
-      const taskStruturizedData = transformDbDataTask(cards);
-      return taskStruturizedData;
+    if (error) {
+      throw new Error(error.message);
     }
 
-    if (error) {
-      throw error;
-    }
+    return transformDbDataTask(cards);
   } catch (e) {
     throw e;
   }
@@ -109,14 +148,16 @@ export const sendColumn = async (
   columnTitle: string
 ) => {
   try {
-    const { error } = await supabase
+    const { data: columns, error } = await supabase
       .from("columns")
       .insert([{ id: columnId, userEmail: email, title: columnTitle }])
       .select();
 
     if (error) {
-      throw error;
+      throw new Error(error.message);
     }
+
+    return columns;
   } catch (e) {
     throw e;
   }
@@ -129,7 +170,7 @@ export const addCard = async (
   email: string
 ) => {
   try {
-    const { data: error } = await supabase
+    const { data: cards, error } = await supabase
       .from("cards")
       .insert([
         {
@@ -142,8 +183,10 @@ export const addCard = async (
       .select();
 
     if (error) {
-      return;
+      throw new Error(error.message);
     }
+
+    return cards;
   } catch (e) {
     throw e;
   }
@@ -153,24 +196,26 @@ export const updateCardFromDb = async (
   cardId: string,
   cardDescription: string,
   email: string,
-  columndId: string,
+  columnId: string,
   date: string
 ) => {
   try {
-    const { data: error } = await supabase
+    const { data: cards, error } = await supabase
       .from("cards")
       .update({
         description: cardDescription,
         updatedBy: email,
-        column_id: columndId,
+        column_id: columnId,
         created_at: date,
       })
       .eq("id", cardId)
       .select();
 
     if (error) {
-      return;
+      throw new Error(error.message);
     }
+
+    return cards;
   } catch (e) {
     throw e;
   }
@@ -181,15 +226,17 @@ export const updateColumnNameFromDb = async (
   columnTitle: string
 ) => {
   try {
-    const { data: error } = await supabase
+    const { data, error } = await supabase
       .from("columns")
       .update({ title: columnTitle })
       .eq("id", columnId)
       .select();
 
     if (error) {
-      return;
+      throw new Error(error.message);
     }
+
+    return data;
   } catch (e) {
     throw e;
   }
@@ -197,13 +244,10 @@ export const updateColumnNameFromDb = async (
 
 export const deleteColumnFromDb = async (columnId: string) => {
   try {
-    const { data: error } = await supabase
-      .from("columns")
-      .delete()
-      .eq("id", columnId);
+    const { error } = await supabase.from("columns").delete().eq("id", columnId);
 
     if (error) {
-      return;
+      throw new Error(error.message);
     }
   } catch (e) {
     throw e;
@@ -212,13 +256,10 @@ export const deleteColumnFromDb = async (columnId: string) => {
 
 export const deleteTaskFromDb = async (taskId: string) => {
   try {
-    const { data: error } = await supabase
-      .from("cards")
-      .delete()
-      .eq("id", taskId);
+    const { error } = await supabase.from("cards").delete().eq("id", taskId);
 
     if (error) {
-      return;
+      throw new Error(error.message);
     }
   } catch (e) {
     throw e;

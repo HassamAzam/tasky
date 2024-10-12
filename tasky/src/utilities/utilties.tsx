@@ -10,7 +10,7 @@ export const getFormattedDate = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 };
 
-export const formatTimestamp = (timestamp: string) => {
+export const formatTimestamp = (timestamp: string): string => {
   const date = new Date(timestamp);
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -22,12 +22,4 @@ export const formatTimestamp = (timestamp: string) => {
   };
 
   return date.toLocaleDateString("en-US", options);
-};
-
-export const sessionClear = () => {
-  sessionStorage.clear();
-};
-
-export const sessionSetter = (user: string) => {
-  sessionStorage.setItem("loggedInUser", user);
 };
